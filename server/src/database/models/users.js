@@ -1,7 +1,8 @@
 "use strict";
 const { model } = require("../utils");
+const Password = require("../../services/password");
 
-module.exports = (sequelize, DataTypes ) => {
+module.exports = (sequelize, DataTypes) => {
     const Users = model(
         sequelize,
         "Users",
@@ -27,7 +28,16 @@ module.exports = (sequelize, DataTypes ) => {
                 allowNull: false,
             },
         },
+        { 
+            defaultScope: {
+                attributes: { exclude: ['password'] }
+            }
+        }
     );
+
+    Users.beforeCreate(async (user, options) => {
+        user.password = await Password.hash(user.password);
+    });
 
     return Users;
 };
