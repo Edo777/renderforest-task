@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
                 allowNull: false,
             },
             imageId: {
-                type: DataTypes.STRING,
+                type: DataTypes.INTEGER,
                 allowNull: false,
             },
         },

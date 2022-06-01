@@ -22,11 +22,15 @@ module.exports = (sequelize, DataTypes ) => {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
-            description: {
-                type: DataTypes.STRING,
+            price: {
+                type: DataTypes.INTEGER,
                 allowNull: false,
             },
-            tags: {
+            currency: {
+                type: DataTypes.ENUM('amd', 'usd', 'rub'),
+                allowNull: true,
+            },
+            description: {
                 type: DataTypes.STRING,
                 allowNull: false,
             }

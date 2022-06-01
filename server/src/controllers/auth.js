@@ -1,6 +1,7 @@
 const { Users } = require("../database")();
 const { BadRequestError } = require("../errors")
-const Token = require("../services/token");
+const { generateToken } = require("../services/token");
+const Password = require("../services/password");
 
 /**
  * Helper for findone
@@ -26,30 +27,68 @@ async function _create(data) {
  * @param {Express.Response} res 
  * @returns 
  */
-async function signin(req, res) {
+async function signin(req, res, next) {
   try {
-    const locations = await Users.findAll({ });
-  
-    return res.send({ locations: locations });
+    const { email, password } = req.body;
+
+    // Get user by email
+    const existingUser = await _findOne({ where : { email } , attributes: [
+      "id", "email", "password"
+    ]});
+
+    if (!existingUser) {
+     return next(BadRequestError('Invalid credentials'));
+    }
+
+    // Compare passwords
+    // Important and main action of auth
+    const passwordsMatching = await Password.compare(
+      existingUser.password,
+      password
+    );
+    
+    if (!passwordsMatching) {
+      return next(BadRequestError('Invalid Credentials'));
+    }
+
+    // Generate JWT
+    const token = generateToken({
+      id: existingUser.id,
+      email: existingUser.email,
+    });
+
+    // Store it on session object
+    req.session = { jwt: token };
+
+    return res.status(200).send({
+      id: existingUser.id,
+      email: existingUser.email
+    });
   } catch (error) {
     console.log(error)
     return res.send(error);
   }
 }
 
+/**
+ * Signup of user
+ * @returns 
+ */
 async function signup(req, res, next) {
-  console.log(req.activeUser);
   const { email, password, regionId , name , phone } = req.body;
+
+  // Check existing of user by email
   const existingUser = await _findOne({ where : {email} });
 
   if(existingUser) {
     return next(BadRequestError('Email is in use'));
   }
 
+  // Set user to database
   const user = await _create({ email, password, regionId , name , phone });
 
    // Generate JWT
-   const token = Token.generateToken({
+   const token = generateToken({
     id: user.id,
     email: user.email,
   });
@@ -57,7 +96,10 @@ async function signup(req, res, next) {
   // Store it on session object
   req.session = { jwt: token };
 
-  res.status(201).send(user);
+  res.status(201).send({
+    id: user.id,
+    email: user.email
+  });
 }
 
 module.exports = {  

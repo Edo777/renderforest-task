@@ -27,14 +27,18 @@ module.exports = {
                     allowNull: false,
                     references: { model: "Categories", key: "id" },
                 },
+                price: {
+                    type: Sequelize.INTEGER,
+                    allowNull: true,
+                },
+                currency: {
+                    type: Sequelize.ENUM('amd', 'usd', 'rub'),
+                    allowNull: true,
+                },
                 description: {
                     type: Sequelize.STRING,
                     allowNull: false,
                 },
-                tags: {
-                    type: Sequelize.STRING,
-                    allowNull: true,
-                }
             }
         );
     },

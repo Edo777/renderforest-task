@@ -1,18 +1,17 @@
 const express =  require("express");
 
-const { signinValidator, signupValidator } = require("../validations/auth");
-const { SIGNIN: SIGNIN_URL, SIGNUP: SIGNUP_URL } = require("./config");
-const { signin, signup } = require("../controllers/auth");
+const { announcementCreateValidator } = require("../validations/announcements");
 const validateRequest = require("../middlewares/validate-request");
+const { create } = require("../controllers/announcements");
 
 const router = express.Router();
 
-// Signin of user
+// Create announcement
 router.post(
-  SIGNIN_URL, 
-  signinValidator(),
+  ANNOUNCEMENT_CREATE_URL, 
+  announcementCreateValidator(),
   validateRequest, 
-  signin
+  createAnnouncement
 );
 
 // Signup of user
@@ -20,7 +19,7 @@ router.post(
   SIGNUP_URL, 
   signupValidator(), 
   validateRequest, 
-  signup
+  create
 );
 
 module.exports =  { 

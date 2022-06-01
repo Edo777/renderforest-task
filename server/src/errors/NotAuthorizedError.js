@@ -9,7 +9,7 @@ class NotAuthorizedError extends MainError {
   }
 
   serializeErrors() {
-    return [{message: 'Not Authorized'}];
+    return [{ message: 'Not Authorized' }];
   }
 }
 

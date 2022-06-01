@@ -1,27 +1,32 @@
+/**
+ * Available Algorithms
+ * ['RS256', 'RS384', 'RS512', 'ES256', 'ES384', 'ES512', 'HS256', 'HS384', 'HS512', 'none']
+ */
+
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = process.env;
-const algorithm = "SHA256";
 
 class Token {
-  async generateToken(data, expires){
-    try {
-      return jwt.sign(data, JWT_SECRET || "My secret",
-        {
-            algorithm: algorithm,
-            expiresIn: expires  * 1000,
-        }
-      );
-    } catch (error) {
-      return null;
-    }
+  #secret;
+  #algorithm;
+  #expiresIn;
+
+  constructor() {
+    this.#secret = process.env.JWT_SECRET || "My secret";
+    this.#algorithm = "HS256";
+    this.#expiresIn =  3600 * 24 * 1000; // One day
+  }
+
+  generateToken(data){
+    return jwt.sign(data, this.#secret,
+      {
+          algorithm: this.#algorithm,
+          expiresIn: this.#expiresIn,
+      }
+    );
   }
 
   decodeToken(token) {
-    try {
-      return jwt.verify(token, JWT_SECRET || "My secret");
-    } catch (error) {
-      return null;
-    }
+    return jwt.verify(token, this.#secret);
   }
 }
 

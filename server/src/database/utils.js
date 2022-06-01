@@ -153,8 +153,45 @@ const migration = function (queryInterface, tableInfo, fields, options = {}) {
     });
 };
 
+/**
+ * Add Unqiue index
+ * @param {any} queryInterface
+ * @param {String} modelName
+ * @param {{field: string, indexName?: string}} column
+ * @returns {Promise<any>}
+ */
+ const addSingleUniqueIndex = function (queryInterface, modelName, column) {
+    const tableName = Utils.underscoredIf(modelName, true);
+    const fieldName = Utils.underscoredIf(column.field, true);
+
+    let indexName = fieldName;
+    if (column.indexName) {
+        indexName = Utils.underscoredIf(column.indexName, true);
+    }
+
+    return queryInterface.addIndex(tableName, [fieldName], {
+        name: indexName,
+        unique: true,
+    });
+};
+
+/**
+ * Remove index
+ * @param {any} queryInterface
+ * @param {String} modelName
+ * @param {string} column
+ * @returns {Promise<any>}
+ */
+ const removeIndex = function (queryInterface, modelName, column) {
+    const tableName = Utils.underscoredIf(modelName, true);
+    const fieldName = Utils.underscoredIf(column, true);
+
+    return queryInterface.removeIndex(tableName, fieldName);
+};
 
 module.exports =  {
     model,
     migration,
+    addSingleUniqueIndex,
+    removeIndex
 };
