@@ -3,7 +3,7 @@ const express =  require("express");
 const { signinValidator, signupValidator } = require("../validations/auth");
 const { SIGNIN: SIGNIN_URL, SIGNUP: SIGNUP_URL } = require("./config");
 const { signin, signup } = require("../controllers/auth");
-const validateRequest = require("../middlewares/validate-request");
+const { validateRequest } = require("../middlewares");
 
 const router = express.Router();
 
@@ -23,6 +23,4 @@ router.post(
   signup
 );
 
-module.exports =  { 
-  authRouter: router 
-}
+module.exports = router;

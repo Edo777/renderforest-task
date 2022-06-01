@@ -5,4 +5,5 @@ module.exports = {
   NotFoundError: require("./NotFoundError"),
   RequestValidationError: require("./RequestValidationError"),
   DatabaseConnectionError: require("./DatabaseConnectionError"),  
+  DatabaseError: require("./DatabaseError"),  
 }

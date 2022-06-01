@@ -5,7 +5,7 @@ module.exports = {
     up: (queryInterface, Sequelize) => {
         return utils.migration(
             queryInterface,
-            { name: "AssoUsersImages", start: 1 , setDefaultFields: false },
+            { name: "AssoUsersImages", start: 1 },
             {
                 userId: {
                     type: Sequelize.INTEGER,
@@ -18,6 +18,9 @@ module.exports = {
                     references: { model: "Images", key: "id" },
                 },
             },
+            {
+                setDefaultFields: false
+            }
         );
     },
 

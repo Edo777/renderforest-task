@@ -70,7 +70,8 @@ function model(sequelize, modelName, fields, options = {}) {
  * @param {String | { name: String, start?: Number }} tableInfo
  * @param {any} fields
  * @param {{
- *  setDefaultFields: boolean
+ *  setDefaultFields: boolean,
+ *  excludesDefaultFields: [string]
  * }} options
  * @returns {Promise<any>}
  */
@@ -118,12 +119,20 @@ const migration = function (queryInterface, tableInfo, fields, options = {}) {
         },
     };
 
-    if(tableInfo.setDefaultFields === false) {
+    if(options.setDefaultFields === false) {
         delete newFields['id'];
         delete newFields['createdAt'];
         delete newFields['deletedAt'];
         delete newFields['updatedAt'];
         delete options.setDefaultFields;
+    }
+
+    if(options.excludesDefaultFields && options.excludesDefaultFields.length) {
+        options.excludesDefaultFields.forEach((excludedField) => {
+            delete newFields[excludedField];
+        });
+
+        delete options.excludesDefaultFields;
     }
 
     Object.keys(newFields).forEach(function (key) {
@@ -176,6 +185,28 @@ const migration = function (queryInterface, tableInfo, fields, options = {}) {
 };
 
 /**
+ * Add combined Unqiue index
+ * @param {any} queryInterface
+ * @param {String} modelName
+ * @param {{fields: string, indexName?: string}} column
+ * @returns {Promise<any>}
+ */
+function addCombinedUniqueIndex(queryInterface, modelName, column) {
+    const tableName = Utils.underscoredIf(modelName, true);
+    const fieldNames = column.fields.map((field) => Utils.underscoredIf(field, true)) ;
+
+    let indexName = fieldNames.join("_");
+    if (column.indexName) {
+        indexName = Utils.underscoredIf(column.indexName, true);
+    }
+
+    return queryInterface.addIndex(tableName, fieldNames, {
+        name: indexName,
+        unique: true,
+    });
+}
+
+/**
  * Remove index
  * @param {any} queryInterface
  * @param {String} modelName
@@ -189,9 +220,25 @@ const migration = function (queryInterface, tableInfo, fields, options = {}) {
     return queryInterface.removeIndex(tableName, fieldName);
 };
 
+/**
+ * Remove combined index
+ * @param {any} queryInterface
+ * @param {String} modelName
+ * @param {string} columns
+ * @returns {Promise<any>}
+ */
+ const removeCombinedIndex = function (queryInterface, modelName, columns) {
+    const tableName = Utils.underscoredIf(modelName, true);
+    const fieldNames = columns.map((field) => Utils.underscoredIf(field, true)) ;
+
+    return queryInterface.removeIndex(tableName, fieldNames.join("_"));
+};
+
 module.exports =  {
     model,
     migration,
     addSingleUniqueIndex,
+    addCombinedUniqueIndex,
+    removeCombinedIndex,
     removeIndex
 };

@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser')
 const cookieSession  = require("cookie-session");
 
 // Routers
-const { authRouter } =  require("./routes/auth");
+const { authRouter, announcementRouter } =  require("./routes");
 
 // Error instances
 const { NotFoundError } = require("./errors");
@@ -35,6 +35,8 @@ app.use(
 app.use(authRouter);
 
 app.use(activeUser);
+app.use(announcementRouter);
+
 
 // Set active session user
 

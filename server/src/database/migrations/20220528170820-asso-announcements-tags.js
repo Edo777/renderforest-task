@@ -5,7 +5,7 @@ module.exports = {
     up: (queryInterface, Sequelize) => {
         return utils.migration(
             queryInterface,
-            { name: "AssoAnnouncementsTags", start: 1 , setDefaultFields: false },
+            { name: "AssoAnnouncementsTags", start: 1 },
             {
                 announcementId: {
                     type: Sequelize.INTEGER,
@@ -18,6 +18,9 @@ module.exports = {
                     references: { model: "Tags", key: "id" },
                 },
             },
+            {
+                excludesDefaultFields: ["createdAt", "deletedAt", "updatedAt"]
+            }
         );
     },
 

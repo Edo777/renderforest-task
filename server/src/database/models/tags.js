@@ -13,6 +13,12 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            // Partially hashed name ( only first and last chars )
+            phName: {
+                type: DataTypes.INTEGER.UNSIGNED,
+                allowNull: false,
+            },
+            // Hashed name ( not partially )
             hName: {
                 type: DataTypes.INTEGER.UNSIGNED,
                 allowNull: false,
@@ -22,22 +28,25 @@ module.exports = (sequelize, DataTypes) => {
             indexes: [
                 {
                     unique: true,
-                    fields: ['hname']
+                    fields: ['phName', 'hname']
                 },
-            ]
+            ],
+            timestamps: false,
         }
     );
 
     Tags.beforeCreate(async (tag) => {
-        if(!tag.hName) {
-            const hash = numericHash(tag.name);
-            tag.hName = hash;
+        if(!tag.hName || !tag.phName) {
+            const { complete, partial } = numericHash.combined(tag.name);
+            tag.hName = complete;
+            tag.phName = partial;
         }
     });
 
     Tags.beforeUpdate(async (tag) => {
-        const hash = numericHash(tag.name);
-        tag.hName = hash;
+        const { complete, partial } = numericHash.combined(tag.name);
+        tag.hName = complete;
+        tag.phName = partial;
     });
 
     return Tags;

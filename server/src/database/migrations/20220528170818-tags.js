@@ -11,10 +11,17 @@ module.exports = {
                     type: Sequelize.STRING,
                     allowNull: false,
                 },
+                phName: {
+                    type: Sequelize.INTEGER.UNSIGNED,
+                    allowNull: false,
+                },
                 hName: {
                     type: Sequelize.INTEGER.UNSIGNED,
                     allowNull: false,
                 }
+            },
+            {
+                excludesDefaultFields: ['createdAt', 'deletedAt', 'updatedAt']
             }
         );
     },
