@@ -135,7 +135,7 @@ async function createTags(tags, transaction = null) {
     returning: true
   }
 
-  if(transaction) { 
+  if(transaction) {
     bulkCreateOptions.transaction = transaction;
   }
 
@@ -267,8 +267,7 @@ async function searchAnnouncement(req, res, next) {
 
     // Set cache
     setImmediate(() => {
-      console.log("Immediate");
-      setCache(req.query, result)
+      setCache(req.query, result);
     });
     
     return res.send(result);
@@ -289,14 +288,12 @@ async function _delete(req, res, next) {
     const _user = req.activeUser;
     const announcementId = req.params.id;
 
-    await AssoAnnouncementsTags.destroy({ where : { announcementId } })
-
     const result = await Announcements.destroy({ 
       where : { id: announcementId, userId: _user.id },
       force: true 
     })
 
-    return res.send({status: "success", result});
+    return res.send({status: result ? "success": "no-action", result});
   } catch (error) {
     next(DatabaseError(error.message || "Unknown"));
   }
