@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser')
 const cookieSession  = require("cookie-session");
 
 // Routers
-const { authRouter, announcementRouter } =  require("./routes");
+const { authRouter, announcementRouter, commonRouter } =  require("./routes");
 
 // Error instances
 const { NotFoundError } = require("./errors");
@@ -32,20 +32,23 @@ app.use(
     })
 );
 
+// Common of all members
+app.use(commonRouter);
+
+// Authentication
 app.use(authRouter);
 
+// Credentials middleware (Set active session user)
 app.use(activeUser);
+
+// -------- PERMITTED ROUTES -----------
+
+// Announcements actions ( for permitted user )
 app.use(announcementRouter);
-
-
-// Set active session user
-
-
-// routes here
 
 app.all('*', async (req, res) => { 
     console.log(req.activeUser);
-    throw new NotFoundError();
+    throw NotFoundError();
 })
 
 // Error handling...

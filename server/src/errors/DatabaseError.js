@@ -5,7 +5,7 @@ class DatabaseError extends MainError {
       super(message);
       
       this.statusCode = 500;
-      this.reason = 'Please try later';
+      this.reason = message;
       Object.setPrototypeOf(this, DatabaseError.prototype);
   }
 

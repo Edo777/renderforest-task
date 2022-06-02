@@ -1,9 +1,9 @@
 const express =  require("express");
 
 const { announcementCreateValidator } = require("../validations/announcements");
-const { ANNOUNCEMENTS_CREATE_URL } = require("./config");
+const { ANNOUNCEMENTS_CREATE_URL, ANNOUNCEMENTS_DELETE_URL } = require("./config");
 const { validateRequest } = require("../middlewares");
-const { create } = require("../controllers/announcements");
+const { create, _delete } = require("../controllers/announcements");
 
 const router = express.Router();
 
@@ -15,12 +15,10 @@ router.post(
   create
 )
 
-// Signup of user
-// router.post(
-//   SIGNUP_URL, 
-//   signupValidator(), 
-//   validateRequest, 
-//   create
-// );
+// Delete announcement
+router.delete(
+  ANNOUNCEMENTS_DELETE_URL,
+  _delete
+);
 
 module.exports = router;

@@ -1,12 +1,18 @@
 /**
- * Hash all characters of string
+ * Hash characters of string
  * @param {string} str 
+ * @param {number} start 
+ * @param {number} end 
  * @returns {number}
  */
-function complete(str) {
+function complete(str, start=0, end=str.length) {
+  if(str.length < end) {
+    end = str.length;
+  }
+
   let hash = 0;
 
-  for(let i = 0; i < str.length; i++) {
+  for(let i = start; i < end; i++) {
     hash = hash + str.charCodeAt(i);
   }
 
@@ -14,12 +20,23 @@ function complete(str) {
 }
 
 /**
- * Hash first and last chars of string
+ * Hash characters of string (default from [1 to 3])
  * @param {string} str 
+ * @param {number} start 
+ * @param {number} end 
  * @returns {number}
  */
-function partial(str) {
-  return str.charCodeAt(0) + str.charCodeAt(str.length - 1);
+function partial(str, start=0, end=3) {
+  return complete(str, start, end);
+}
+
+/**
+ * Hash first and last chars of string
+ * @param {string} str
+ * @returns {number}
+ */
+function first(str) {
+  return str.charCodeAt(0);
 }
 
 /**
@@ -31,11 +48,13 @@ function combined(str) {
   return {
     partial: partial(str),
     complete: complete(str),
+    first: first(str)
   }
 }
 
 module.exports = {
   complete,
   partial,
-  combined
+  combined,
+  first
 }

@@ -19,7 +19,7 @@ module.exports = {
                 },
             },
             {
-                setDefaultFields: false
+                excludesDefaultFields: ["createdAt", "updatedAt", "deletedAt"]
             }
         );
     },

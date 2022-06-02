@@ -18,6 +18,10 @@ module.exports = {
                 hName: {
                     type: Sequelize.INTEGER.UNSIGNED,
                     allowNull: false,
+                },
+                hfChar: {
+                    type: Sequelize.INTEGER,
+                    allowNull: false,
                 }
             },
             {

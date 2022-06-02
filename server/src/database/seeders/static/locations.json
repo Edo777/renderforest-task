@@ -1,0 +1,26 @@
+[
+  {
+    "name" : "region1",
+    "type" : "region",
+    "subs" : [
+      { "name" : "region1_city1" , "type": "city" },
+      { "name" : "region1_city2" , "type": "city"}
+    ]
+  },
+  {
+    "name" : "region2",
+    "type" : "region",
+    "subs" : [
+      { "name" : "region2_city1" , "type": "city"},
+      { "name" : "region2_city2" , "type": "city"}
+    ]
+  },
+  {
+    "name" : "region3",
+    "type" : "region",
+    "subs" : [
+      { "name" : "region3_city1" , "type": "city"},
+      { "name" : "region3_city2" , "type": "city"}
+    ]
+  }
+]

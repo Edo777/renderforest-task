@@ -1,10 +1,10 @@
 const { app } =  require("./app");
 const registerModules = require("./database");
 
-const start = async () => {
-    // if(!process.env.JWT_KEY) {
-    //     throw new Error('JWT_KEY must be defined');
-    // }
+const start = () => {
+    if(!process.env.JWT_KEY) {
+        throw new Error('JWT_KEY must be defined');
+    }
 
     try {
         registerModules();

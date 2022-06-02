@@ -1,0 +1,24 @@
+[
+  {
+    "name" : "cat1", 
+    "subs": [
+      { 
+        "name": "cat1_sub1", 
+        "subs": [] 
+      },
+      {
+        "name": "cat1_sub2", 
+        "subs": []
+      }
+    ]
+  },
+  {
+    "name" : "cat2", 
+    "subs": [
+      { 
+        "name": "cat2_sub1", 
+        "subs": []
+      }
+    ]
+  }
+]
