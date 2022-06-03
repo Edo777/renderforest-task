@@ -39,7 +39,7 @@ async function generateTokenAndSetToRequest(tokenData, req) {
 
   // Set cache refreshToken-tokenData
   setImmediate(() => {
-    setCache(refreshToken, tokenData);
+    setCache(refreshToken, tokenData, 3600 * 24 * 5);
   });
 }
 

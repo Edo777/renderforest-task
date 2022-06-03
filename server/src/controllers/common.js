@@ -19,7 +19,7 @@ async function getLocations(req, res, next) {
 
     // Set cache
     setImmediate(() => {
-      setCache("locations", result);
+      setCache("locations", locations, 3600 * 24);
     });
 
     return res.send(locations);
@@ -45,7 +45,7 @@ async function getLocations(req, res, next) {
 
     // Set cache
     setImmediate(() => {
-      setCache("categories", result);
+      setCache("categories", categories, 3600 * 24);
     });
 
     return res.send(categories);

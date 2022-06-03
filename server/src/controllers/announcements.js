@@ -266,7 +266,7 @@ async function searchAnnouncement(req, res, next) {
 
     // Set cache
     setImmediate(() => {
-      setCache(req.query, result);
+      setCache(req.query, result, 3600);
     });
     
     return res.send(result);
