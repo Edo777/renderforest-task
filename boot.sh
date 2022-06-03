@@ -21,10 +21,6 @@ fi
 
 cd ./server
 
-# set .env and .sequelizerc files
-cp .env.example .env
-cp .sequelizerc.example .sequelizerc
-
 # Install Dependencies
 npm install
 npm install sequelize-cli --global
@@ -33,6 +29,3 @@ npx sequelize-cli db:migrate
 npx sequelize-cli db:seed:all
 
 npm start
-
-
-
