@@ -1,5 +1,7 @@
 # renderforest-task
 
+# First of all please use it in LINUX system
+
 1. Use nodejs version >= 14
 2. Check redis installed or not
 3. Run conf.sh
