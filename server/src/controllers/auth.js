@@ -1,6 +1,8 @@
 const { Users } = require("../database")();
 const { BadRequestError } = require("../errors")
-const { generateToken } = require("../services/token");
+const { generateToken, generateRefreshToken } = require("../services/token");
+const { setCache } = require("../redis");
+
 const Password = require("../services/password");
 
 /**
@@ -19,6 +21,26 @@ async function _findOne(options) {
  */
 async function _create(data) {
   return await Users.create(data);
+}
+
+/**
+ * Set token to cookie-session
+ * Cache with redis for refresh token
+ * @param {object} tokenData 
+ * @param {Express.Request} req 
+ */
+async function generateTokenAndSetToRequest(tokenData, req) {
+  // Generate JWT
+  const token = generateToken(tokenData);
+  const refreshToken = generateRefreshToken();
+
+  // Store it on session object
+  req.session = { jwt: token , refreshToken };
+
+  // Set cache refreshToken-tokenData
+  setImmediate(() => {
+    setCache(refreshToken, tokenData);
+  });
 }
 
 /**
@@ -51,19 +73,14 @@ async function signin(req, res, next) {
       return next(BadRequestError('Invalid Credentials'));
     }
 
-    // Generate JWT
-    const token = generateToken({
+    // Set token to cookie
+    const userData = {
       id: existingUser.id,
       email: existingUser.email,
-    });
+    };
+    await generateTokenAndSetToRequest(userData, req);
 
-    // Store it on session object
-    req.session = { jwt: token };
-
-    return res.status(200).send({
-      id: existingUser.id,
-      email: existingUser.email
-    });
+    return res.status(200).send(userData);
   } catch (error) {
     console.log(error)
     return res.send(error);
@@ -87,19 +104,15 @@ async function signup(req, res, next) {
   // Set user to database
   const user = await _create({ email, password, regionId , name , phone });
 
-   // Generate JWT
-   const token = generateToken({
+   // Set token to cookie
+  const userData = {
     id: user.id,
     email: user.email,
-  });
+  };
+  
+  await generateTokenAndSetToRequest(userData, req);
 
-  // Store it on session object
-  req.session = { jwt: token };
-
-  res.status(201).send({
-    id: user.id,
-    email: user.email
-  });
+  res.status(201).send(userData);
 }
 
 module.exports = {  

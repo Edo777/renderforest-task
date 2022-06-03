@@ -3,7 +3,7 @@ const dbConfig = require("./configs/config")["development"];
 const path =  require("path");
 const fs = require("fs");
 
-// Crreate sequelize connection
+// Create sequelize connection
 const sequelize = new Sequelize(
   dbConfig.database,
   dbConfig.username,

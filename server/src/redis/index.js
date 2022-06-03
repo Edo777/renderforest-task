@@ -25,12 +25,12 @@ async function checkCache(key) {
 }
 
 /**
- * 
+ * Cache data in redis
  * @param {string} key 
  * @param {string} value 
  * @returns 
  */
-async function setCache(key, value) {
+async function setCache(key, value, expires = null) {
   try {
     if(typeof value !== "string") {
       value = JSON.stringify(value);
@@ -41,6 +41,10 @@ async function setCache(key, value) {
     }
 
     const redisClient = await getInstance();
+    if(expires) {
+      return await redisClient.set(key, value, 'EX', expires);
+    }
+
     return await redisClient.set(key, value);
   } catch (error) {
     return null;

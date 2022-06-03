@@ -1,5 +1,6 @@
 const { Locations , Categories } = require("../database")();
-const { BadRequestError, DatabaseError } = require("../errors");
+const { setCache, checkCache } = require("../redis");
+const { DatabaseError } = require("../errors");
 
 /**
  * Create announcement
@@ -7,8 +8,19 @@ const { BadRequestError, DatabaseError } = require("../errors");
  */
 async function getLocations(req, res, next) {
   try {
+    let cache = await checkCache("locations");
+
+    if(cache) {
+      return res.send(cache);
+    }
+
     // take locations
     const locations = await Locations.findAll({});
+
+    // Set cache
+    setImmediate(() => {
+      setCache("locations", result);
+    });
 
     return res.send(locations);
   } catch (error) {
@@ -22,8 +34,19 @@ async function getLocations(req, res, next) {
  */
  async function getCategories(req, res, next) {
   try {
+    let cache = await checkCache("categories");
+
+    if(cache) {
+      return res.send(cache);
+    }
+
     // take locations
     const categories = await Categories.findAll({});
+
+    // Set cache
+    setImmediate(() => {
+      setCache("categories", result);
+    });
 
     return res.send(categories);
   } catch (error) {

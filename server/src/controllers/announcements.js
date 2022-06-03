@@ -1,4 +1,4 @@
-const { Announcements, Tags, AssoAnnouncementsTags, Users, sequelize, Sequelize } = require("../database")();
+const { Announcements, Tags, AssoAnnouncementsTags, Users, sequelize, Sequelize, Locations, Categories } = require("../database")();
 const { setCache, checkCache } = require("../redis");
 
 const { lte, gte, or } = Sequelize.Op;
@@ -213,7 +213,6 @@ async function searchAnnouncement(req, res, next) {
       return res.send(cachedData);
     }
 
-    // console.log(d);
     const findOptions = {};
 
     // category 
@@ -288,19 +287,60 @@ async function _delete(req, res, next) {
     const _user = req.activeUser;
     const announcementId = req.params.id;
 
+    // Destroy execution
     const result = await Announcements.destroy({ 
       where : { id: announcementId, userId: _user.id },
       force: true 
     })
 
-    return res.send({status: result ? "success": "no-action", result});
+    return res.send({
+      status: result ? "success": "no-action", 
+      result
+    });
   } catch (error) {
     next(DatabaseError(error.message || "Unknown"));
+  }
+}
+
+/**
+ * Get created announcements of user
+ * @param {*} req 
+ * @param {*} res 
+ * @param {*} next 
+ * @returns 
+ */
+async function getCreatedAnnouncements(req, res, next) {
+  try {
+    const result = await Announcements.findAll({ 
+      where : {  userId: req.activeUser.id },
+      include: [
+        {
+          model : Locations,
+          as : "region",
+          attributes : ["id", "name"]
+        }, 
+        {
+          model : Locations,
+          as : "city",
+          attributes : ["id", "name"]
+        },
+        {
+          model : Categories,
+          as : "category",
+          attributes : ["id", "name"]
+        }
+      ]
+    });
+
+    return res.send(result);
+  } catch (error) {
+    next(DatabaseError(error.message));
   }
 }
 
 module.exports = {  
   create,
   _delete,
-  search: searchAnnouncement
+  search: searchAnnouncement,
+  getCreatedAnnouncements
 }

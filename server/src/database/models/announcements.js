@@ -45,5 +45,31 @@ module.exports = (sequelize, DataTypes ) => {
         }, 
     );
 
+    Announcements.associate = function (models) {
+        // Announcement-Category
+        Announcements.belongsTo(models["Categories"], {
+            foreignKey: "categoryId",
+            as: "category"
+        });
+
+        // Announcement-User
+        Announcements.belongsTo(models["Users"], {
+            foreignKey: "userId",
+            as: "user"
+        });
+
+        // Announcement-Location as region
+        Announcements.belongsTo(models["Locations"], {
+            foreignKey: "regionId",
+            as: "region"
+        });
+
+        // Announcement-Location as city
+        Announcements.belongsTo(models["Locations"], {
+            foreignKey: "cityId",
+            as: "city"
+        });
+    };
+
     return Announcements;
 };
