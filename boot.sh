@@ -24,6 +24,7 @@ cd ./server
 # Install Dependencies
 npm install
 npm install sequelize-cli --global
+npm install -g npx
 
 npx sequelize-cli db:migrate
 npx sequelize-cli db:seed:all
